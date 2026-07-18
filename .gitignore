@@ -1,0 +1,12 @@
+# Xcode / SwiftPM build artifacts
+.DS_Store
+*.xcodeproj/
+.build/
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+.swiftpm/
+
+# Per-developer code signing (Team IDs stay off version control)
+Signing.local.xcconfig

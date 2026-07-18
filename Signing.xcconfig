@@ -1,0 +1,34 @@
+// ============================================================================
+// Arcade Shells — code signing for on-device testing
+// ============================================================================
+// A FREE Apple Account works for running on your own devices (no $99 needed).
+//
+// Each developer sets THEIR OWN Team ID locally so it never lands in git:
+//   1. Xcode ▸ Settings ▸ Accounts ▸ "+" ▸ add your Apple ID.
+//      Xcode creates a free "Personal Team" for you.
+//   2. Find your Team ID (10 chars, e.g. A1B2C3D4E5):
+//        • Xcode ▸ a target ▸ Signing & Capabilities, or
+//        • developer.apple.com ▸ Account ▸ Membership details.
+//   3. Create a file next to this one named "Signing.local.xcconfig" with:
+//        DEVELOPMENT_TEAM = YOURTEAMID
+//      That file is .gitignore'd, so your Team ID never enters version control.
+//
+// Simulators and local macOS builds need no Team ID at all.
+//
+// Notes:
+//   • Free personal teams use ~7-day provisioning profiles, so re-run from
+//     Xcode about once a week to refresh.
+//   • Physical Apple TV requires pairing in Xcode (Window ▸ Devices and
+//     Simulators). Enable Developer Mode on the Apple TV if prompted.
+//   • Leave DEVELOPMENT_TEAM unset to build Simulators / local macOS only.
+// ============================================================================
+
+CODE_SIGN_STYLE = Automatic
+
+CODE_SIGNING_ALLOWED[sdk=iphonesimulator*] = NO
+CODE_SIGNING_ALLOWED[sdk=appletvsimulator*] = NO
+
+CODE_SIGN_IDENTITY[sdk=macosx*] = -
+
+// Per-developer Team ID lives in an untracked local override (see notes above).
+#include? "Signing.local.xcconfig"
