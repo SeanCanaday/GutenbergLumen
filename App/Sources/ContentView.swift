@@ -24,7 +24,11 @@ struct ContentView: View {
                     game.newGame()
                 }
                 .id(celebrationToken)
+                // Keep layout in the window content bounds on macOS; ignoring the
+                // safe area here desyncs hit-testing when the window is not fullscreen.
+                #if os(tvOS)
                 .ignoresSafeArea()
+                #endif
                 .transition(.opacity)
                 .zIndex(8)
             }
