@@ -7,7 +7,9 @@ struct ContentView: View {
     @State private var showSplash = true
     @State private var celebrationToken = UUID()
 
-    private var showsGameChrome: Bool { !showSplash }
+    /// tvOS focus ignores `.disabled()` — drop game chrome whenever a modal is up
+    /// so focus cannot escape into the rail behind celebration / splash.
+    private var showsGameChrome: Bool { !showSplash && !game.didJustWin }
 
     var body: some View {
         ZStack {
@@ -17,7 +19,7 @@ struct ContentView: View {
                 mainLayout
             }
 
-            if game.didJustWin, showsGameChrome {
+            if game.didJustWin, !showSplash {
                 WinCelebration(game: game) {
                     game.newGame()
                 }
