@@ -50,8 +50,8 @@ enum Layout {
 }
 
 extension Color {
-    /// Lit tile — warm neon yellow against the synthwave field.
-    static let lumenLit = Color(red: 0.98, green: 0.80, blue: 0.22)
+    /// Lit tile — neon pink against the synthwave field.
+    static let lumenLit = Color.neonPink
     static let lumenDim = Color.synthNavy.opacity(0.85)
 }
 

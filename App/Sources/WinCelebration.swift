@@ -14,8 +14,8 @@ struct WinCelebration: View {
                 subline: "SOLVED IN \(game.moves) · PAR \(game.par)",
                 detail: detail,
                 tagline: game.moves <= game.par ? "TOTALLY RAD!" : "LIGHTS OUT!",
-                accent: .lumenLit,
-                secondary: .neonPink
+                accent: .neonPink,
+                secondary: .neonBlue
             ),
             burstCenterY: 0.42,
             onPlayAgain: onPlayAgain

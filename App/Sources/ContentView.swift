@@ -70,14 +70,14 @@ struct ContentView: View {
     private var statusBar: some View {
         HStack(spacing: 10) {
             Circle()
-                .fill(game.isCleared ? Color.lumenLit : Color.neonPink)
+                .fill(game.isCleared ? Color.neonGreen : Color.neonPink)
                 .frame(width: 8, height: 8)
-                .shadow(color: (game.isCleared ? Color.lumenLit : Color.neonPink).opacity(0.8), radius: 4)
+                .shadow(color: (game.isCleared ? Color.neonGreen : Color.neonPink).opacity(0.8), radius: 4)
 
             Text(game.isCleared ? "CLEARED!" : "\(game.litCount) LIGHTS ON")
                 .font(.caption.weight(.black))
                 .tracking(1)
-                .foregroundStyle(game.isCleared ? Color.lumenLit : Color.neonPink.opacity(0.95))
+                .foregroundStyle(game.isCleared ? Color.neonGreen : Color.neonPink.opacity(0.95))
 
             Spacer(minLength: 0)
 
