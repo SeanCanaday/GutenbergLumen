@@ -7,32 +7,13 @@ struct ContentView: View {
     @State private var showSplash = true
     @State private var celebrationToken = UUID()
 
-    /// tvOS focus ignores `.disabled()` — drop game chrome whenever a modal is up
-    /// so focus cannot escape into the rail behind celebration / splash.
-    private var showsGameChrome: Bool { !showSplash && !game.didJustWin }
-
     var body: some View {
         ZStack {
             SynthwaveBackground().ignoresSafeArea()
 
-            if showsGameChrome {
-                mainLayout
-            }
-
-            if game.didJustWin, !showSplash {
-                WinCelebration(game: game) {
-                    game.newGame()
-                }
-                .id(celebrationToken)
-                // Keep layout in the window content bounds on macOS; ignoring the
-                // safe area here desyncs hit-testing when the window is not fullscreen.
-                #if os(tvOS)
-                .ignoresSafeArea()
-                #endif
-                .transition(.opacity)
-                .zIndex(8)
-            }
-
+            // Mutually exclusive layers — never stack celebration over live chrome.
+            // Overlay stacking was leaving macOS without a reliable click/key target
+            // after Play Again (worse in windowed layouts).
             if showSplash {
                 SplashView(game: game) {
                     game.newGame()
@@ -41,10 +22,24 @@ struct ContentView: View {
                     }
                 }
                 .transition(.opacity)
-                .zIndex(10)
+            } else if game.didJustWin {
+                WinCelebration(game: game) {
+                    game.newGame()
+                }
+                .id(celebrationToken)
+                #if os(tvOS)
+                .ignoresSafeArea()
+                #endif
+                .transition(.opacity)
+            } else {
+                mainLayout
             }
         }
         .preferredColorScheme(.dark)
+        #if os(macOS)
+        .focusable()
+        .focusEffectDisabled(true)
+        #endif
         .onChange(of: game.didJustWin) { _, won in
             if won { celebrationToken = UUID() }
         }
@@ -197,6 +192,7 @@ struct ContentView: View {
                     )
             )
             .foregroundStyle(enabled ? Color.neonBlue : Color.neonBlue.opacity(0.35))
+            .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
         .disabled(!enabled)
         #if os(tvOS)

@@ -35,9 +35,15 @@ struct BoardView: View {
             Button {
                 game.press(row: row, col: col)
             } label: {
+                // Explicit size + contentShape: macOS `.plain` otherwise hits only
+                // glyph/clear bounds and drops clicks in windowed layouts.
                 Color.clear
+                    .frame(width: side, height: side)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(CellButtonStyle(isLit: isLit, side: side))
+            .frame(width: side, height: side)
+            .contentShape(Rectangle())
             .overlay {
                 if showHint {
                     HintRing(side: side)
@@ -85,7 +91,13 @@ struct CellButtonStyle: ButtonStyle {
     let side: CGFloat
 
     func makeBody(configuration: Configuration) -> some View {
-        CellSurface(isLit: isLit, side: side, isPressed: configuration.isPressed)
+        // Keep the sized label in the hierarchy so AppKit hit-testing matches the tile.
+        configuration.label
+            .overlay {
+                CellSurface(isLit: isLit, side: side, isPressed: configuration.isPressed)
+            }
+            .frame(width: side, height: side)
+            .contentShape(Rectangle())
     }
 
     private struct CellSurface: View {
@@ -106,10 +118,12 @@ struct CellButtonStyle: ButtonStyle {
                 )
                 .shadow(color: isLit ? Color.lumenLit.opacity(0.6) : .clear, radius: isLit ? 12 : 0)
                 .frame(width: side, height: side)
+                .contentShape(Rectangle())
                 .scaleEffect(isPressed ? 0.94 : (isFocused ? 1.08 : 1.0))
                 .animation(.easeOut(duration: 0.12), value: isFocused)
                 .animation(.easeOut(duration: 0.08), value: isPressed)
                 .animation(.easeInOut(duration: 0.15), value: isLit)
+                .allowsHitTesting(false)
         }
     }
 }
