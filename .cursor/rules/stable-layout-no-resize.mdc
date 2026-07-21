@@ -1,0 +1,33 @@
+---
+description: Prefer stable layout sizes; avoid resize/reflow churn in arcade UI
+alwaysApply: true
+---
+
+# Stable layout — limit resize
+
+Arcade UI should feel solid. Prefer reserved, equal sizes over content-driven resize that shifts the whole screen.
+
+## Do
+
+- Reserve space for transient UI (verdict, NEXT, hints) so neighbors do not jump when it appears
+- Equalize peer controls to the largest needed size for the current state (e.g. answer boxes match the tallest label; center shorter text)
+- Use fixed or min heights/widths for chrome that repeats across questions/turns
+- Prefer opacity / allowHitTesting toggles over mounting views that change layout height
+
+## Don't
+
+- Let each cell/button size purely to its own text when peers share a row/grid
+- Grow/shrink primary play areas when secondary copy (CORRECT/INCORRECT, hints) appears
+- Animate layout size changes for routine state (answered, focus, streak) — animate color/opacity/scale on a stable frame instead
+
+## Example
+
+```swift
+// ❌ Each choice sizes to its own label — grid reflows every question
+Text(label).padding().background(...)
+
+// ✅ Measure once per question; all boxes share max height; text centered
+Text(label)
+  .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+  .frame(minHeight: uniformHeight)
+```
